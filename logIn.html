@@ -79,12 +79,12 @@
     function FindEmail(){
         let users = JSON.parse(localStorage.getItem('users'))
         let res = 0;
-        for(let i = 0; i<users.length; i++){
-            if(email.value == users[i].email){
-                res = users[i]
-                return res;
+        if(users!=null){
             for(let i = 0; i<users.length; i++){
                 if(email.value == users[i].email){
+                    res = users[i]
+                    return res;
+                }
             }
         }
         warning.innerHTML += `<div class="alert alert-danger" role="alert">No such email found! Please sign in first</div>`;
