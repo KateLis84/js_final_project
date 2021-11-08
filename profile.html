@@ -103,7 +103,6 @@
 
   //Кружки
     let row = document.getElementById('allMyCups')
-    //let temp = JSON.parse(localStorage.getItem('CurrentUser'))
     let MyCups = me.cups;
 
     document.getElementById('add').addEventListener('click', function(){
@@ -111,9 +110,10 @@
     })
 
     for(i in MyCups){
+      console.log(MyCups[i].photo)
       row.innerHTML += `
-      <div class="card" style="width: 18rem;>
-        <img src="`+ MyCups[i].photo +`" class="card-img-top" alt="cup.webp" style="margin-top: 20px; width: 100px">
+      <div class="card" style="width: 18rem; margin-left: 10px">
+        <img src="`+ MyCups[i].photo +`" class="card-img-top" alt="cup.webp" style="margin-top: 20px">
         <div class="card-body">
           <h5 class="card-title">`+ MyCups[i].name + `</h5>
           <p class="card-text">`+ MyCups[i].description + `</p>

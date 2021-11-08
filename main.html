@@ -58,34 +58,87 @@
       </div>
     </div>
   </nav>
-
+  <div id="warnings"></div>
   <div class="container">
     <div class="row main" id="AllCups">
-        
     </div>
   </div>
 
   <script src="main.js"></script>
 
   <script>
-    let cups = JSON.parse(localStorage.getItem('cups'))
-    let row = document.getElementById('AllCups')
-    for(i in cups) {
-      row.innerHTML += `
-      <div class="card" style="width: 18rem; id="cup`+ cups[i].id +`">
-        <img src="`+ cups[i].photo + `" class="card-img-top" alt="cup.webp">
-        <div class="card-body">
-          <h5 class="card-title">`+ cups[i].name +`</h5>
-          <p class="card-text">`+ cups[i].description +`</p>
-          <h5 class="card-title">`+ cups[i].price + `$</h5>
+    //Відображення товару
+      let cups = JSON.parse(localStorage.getItem('cups'))
+      let row = document.getElementById('AllCups')
+      for(i in cups) {
+        let owner = GetUserOfCup(i)
+        row.innerHTML += `
+        <div class="card" style="width: 18rem;">
+          <img src="`+ cups[i].photo + `" class="card-img-top" alt="cup.webp">
+          <div class="card-body">
+            <h5 class="card-title">`+ cups[i].name +`</h5>
+            <p class="card-text">`+ cups[i].description +`</p>
+            <h5 class="card-title">`+ cups[i].price + `$</h5>
+            <p class="card-text"><small class="text-muted">`+ owner.name + ` `+ owner.secondName +`</small></p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><button class="btn btn-success" id="`+ cups[i].id +`">Add to cart</button></li>
+          </ul>
         </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><button class="btn btn-success">Add to cart</button></li>
-        </ul>
-      </div>
-      `
-    }
+        `
+      }
+
+      function GetUserOfCup(i){
+        let OwnerId = cups[i].ownerId;
+        let users = JSON.parse(localStorage.getItem('users'))
+        let neededUser = users.filter(elem => elem.id == OwnerId);
+        return neededUser[0];
+      }
+    
+
+    //Додавання в кошик
+      let all = document.querySelectorAll('.btn-success')
+      for(i in all) {
+        all[i].addEventListener('click', function(e){
+          // let CupId = e.target.id
+          // let users = JSON.parse(localStorage.getItem('users'))
+          // //Пошук юзера
+          // let me = GetCurrentUser()
+          // let neededUser = users.filter(elem => elem.id == me.id)
+          // //Тимчасово видаляємо його з списку
+          // let newMas = users.filter(elem => elem.id != me.id)
+          // //Записуємо айді кружки в корзину
+          // neededUser[0].cart.push(CupId)
+          // //Повертаємо юзера в список
+          // newMas.push(neededUser[0])
+          // localStorage.setItem('users', JSON.stringify(newMas))
+          
+          document.getElementById('warnings').innerHTML = `
+          <div class="alert alert-success" role="alert" id="Success">
+            Great! You added cup to your cart
+          </div>
+          `
+          let start = 20
+          let op = 100
+          let warning = document.getElementById('Success')
+          let timer = setInterval(function() {
+            if(start<15){
+              console.log('here')
+              warning.style.opacity = op + "%"
+              op = op-1
+            }
+            start = start - 2
+            if(op == 0){
+              clearInterval(timer)
+              document.getElementById('warnings').innerHTML = ""
+            }
+          }, 30);
+
+        })
+      }
+
   </script>
 </body>
+
 
 </html>
