@@ -49,30 +49,134 @@
   </nav>
 
     <div class="container main">
-        <h1>Your Cart</h1>
-        <ul class="list-group row">
-            <li class="list-group-item">
+        <h1>Your Cart</h1> <span id="totalPrice"></span>
+        <ul class="list-group row" id="cartElements">
+            
+        </ul>
+        <div class="row">
+          <button class="btn btn-primary" id="all">Buy All</button>
+        </div>
+    </div>
+</body>
+
+<script src="main.js"></script>
+
+<script>
+  let isIn = localStorage.getItem('IsIn')
+      if(isIn==null || isIn == "false"){
+        document.body.innerHTML = "Log In First"
+      }
+      else{
+let me = GetCurrentUser()
+let BuyAll = document.getElementById('all')
+    if(me.cart.length < 1){
+      BuyAll.classList.add('disabled')
+    }
+
+  
+  let totalPrice = 0;
+  //Пошук товару з корзини
+    let cart = []
+    let AllCups = JSON.parse(localStorage.getItem('cups'))
+    for(i in me.cart){
+      for(j in AllCups){
+        if(me.cart[i] == AllCups[j].id){
+          cart.push(AllCups[j])
+        }
+      }
+    }
+  //Відображення товару
+  let cartElements = document.getElementById("cartElements")
+    for(i in cart){
+      totalPrice += Number(cart[i].price)
+      document.getElementById('totalPrice').innerHTML = "Total " + totalPrice + "$"
+      cartElements.innerHTML += `
+      <li class="list-group-item">
                 <div class="card mb-3" style="max-width: 540px;">
                     <div class="row g-0">
                       <div class="col-md-4">
-                        <img src="cup.webp" class="img-fluid rounded-start" alt="...">
+                        <img src="`+cart[i].photo+`" class="img-fluid rounded-start" alt="...">
                       </div>
                       <div class="col-md-8">
                         <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                          <h5 class="card-title">`+cart[i].name+`</h5>
+                          <p class="card-text">`+cart[i].description+`</p>
+                          <h5 class="card-title">`+cart[i].price+`$</h5>
                           <p class="card-text"><small class="text-muted"> <a href="#">detail</a> </small></p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <button class="btn btn-success">Buy</button>
-                  <button class="btn btn-danger">Delete</button>
+                  <div id="`+cart[i].id+`">
+                    <button class="btn btn-success buy">Buy</button>
+                    <button class="btn btn-danger delete">Delete</button>
+                  </div>
             </li>
-          </ul>
-          <div class="row">
-              <button class="btn btn-primary">Buy All</button>
-          </div>
-    </div>
-</body>
+      `
+    }
+
+  //Логіка кнопки Buy All
+  
+
+  BuyAll.addEventListener('click', function(){
+    let Allusers = JSON.parse(localStorage.getItem('users'))
+    //Шукаємо побрібного користувача
+    let neededUser = Allusers.filter(elem => elem.id == me.id)
+        //Тимчасово видаляємо його з списку
+        let newMas = Allusers.filter(elem => elem.id != me.id)
+        //Видаляємо потрібний товар з кошика
+        neededUser[0].cart = []
+        //Додаємо юзера в масив
+        newMas.push(neededUser[0])
+        //Перезаписуємо оновлений список юзерів
+        localStorage.setItem('users', JSON.stringify(newMas))
+
+        me = GetCurrentUser()
+        window.location.reload(true);
+  })
+
+
+
+  //Видалення товару
+    let delButtons = document.getElementsByClassName('delete')
+    for(i of delButtons){
+      i.addEventListener('click', function(e) {
+        let id = (e.target.parentNode.id)
+        DeleteCup(id)
+      })
+    }
+    
+
+    //Купівля товару
+    let BuyButtons = document.getElementsByClassName('buy')
+    for(i of BuyButtons){
+      i.addEventListener('click', function(e) {
+        let id = (e.target.parentNode.id)
+        DeleteCup(id)
+      })
+    }
+
+
+    //функція видалення
+    function DeleteCup(id){
+      
+      let Allusers = JSON.parse(localStorage.getItem('users'))
+        //Шукаємо побрібного користувача
+        let neededUser = Allusers.filter(elem => elem.id == me.id)
+        //Тимчасово видаляємо його з списку
+        let newMas = Allusers.filter(elem => elem.id != me.id)
+        //Видаляємо потрібний товар з кошика
+        neededUser[0].cart = neededUser[0].cart.filter(elem => elem != id)
+        //Додаємо юзера в масив
+        newMas.push(neededUser[0])
+        //Перезаписуємо оновлений список юзерів
+        localStorage.setItem('users', JSON.stringify(newMas))
+
+        me = GetCurrentUser()
+        window.location.reload(true);
+    }
+  }
+    
+</script>
+
 </html>

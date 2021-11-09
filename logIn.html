@@ -71,6 +71,7 @@
         // Перевірка валідності
             if(key!=false &&isPassword!=false){
                 localStorage.setItem('CurrentUser', key.id);
+                localStorage.setItem('IsIn', true)
                 window.location.href = 'main.html' 
             }
         }

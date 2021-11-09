@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
+    <title>Profile</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
@@ -46,6 +46,10 @@
     </div>
   </nav>
 
+  <div id="warnings">
+      
+  </div>
+
     <div class="container">
         <div class="row">
             <div class="col">
@@ -60,7 +64,6 @@
                           <p class="card-text" id="contacts">Contacts</p>
                           <p class="card-text" id="description">Description</p>
                           <p class="card-text"><small class="text-muted">Verified vendor</small></p>
-                          <button class="btn btn-danger" id="logOut">Log out</button>
                         </div>
                       </div>
                     </div>
@@ -69,7 +72,7 @@
         </div>
 
         <div class="row">
-            <h1 class="col"><span class="badge" style="background-color: #adb5bd">My cups</span><button class="btn btn-primary col" style="margin-left: 5px !important;" id="add">Add Cup</button></h1>
+            <h1 class="col"><span class="badge" style="background-color: #adb5bd">Users cups</span>
         </div>
         
         <div class="row main" id="allMyCups">
@@ -84,8 +87,8 @@
 let isIn = localStorage.getItem('IsIn')
       if(isIn==null || isIn == "false"){
         document.body.innerHTML = "Log In First"
-      }else{
-
+      } else{
+  
   //Профіль
     let name = document.getElementById('name')
     let contacts = document.getElementById('contacts')
@@ -93,28 +96,19 @@ let isIn = localStorage.getItem('IsIn')
     let description = document.getElementById('description')
     let logOut = document.getElementById('logOut')
 
-    let me = GetCurrentUser();
+    let me = JSON.parse(localStorage.getItem('seeUser'))
+    console.log(me)
 
     name.innerText = me.name + " " + me.secondName
     contacts.innerText = "phone: " + me.phone + "\n" + "email: " + me.email
     description.innerText = me.description
     photo.setAttribute('src', me.photo)
 
-    logOut.addEventListener('click', function(){
-      localStorage.setItem('CurrentUser', 0)
-      localStorage.setItem('IsIn', false)
-      window.location.href = 'logIn.html';
-    })
-
 
 
   //Кружки
     let row = document.getElementById('allMyCups')
     let MyCups = me.cups;
-
-    document.getElementById('add').addEventListener('click', function(){
-      window.location.href = 'add.html';
-    })
 
     for(i in MyCups){
       row.innerHTML += `
@@ -125,71 +119,59 @@ let isIn = localStorage.getItem('IsIn')
           <p class="card-text">`+ MyCups[i].description + `</p>
           <h5 class="card-title">`+ MyCups[i].price + `$</h5>
         </div>
-        <ul class="list-group list-group-flush" id="`+MyCups[i].id+`">
-          <button class="btn btn-warning edit" style="margin-bottom: 5px;">Edit</button>
-          <button class="btn btn-danger delete">Delete</button>
+        <ul class="list-group list-group-flush">
+          <button class="btn btn-warning AddToCart" style="margin-bottom: 5px;" id="`+MyCups[i].id+`">Add to cart</button>
         </ul>
       </div>
       `
 
     }
-    
-    let AllCups = JSON.parse(localStorage.getItem('cups'))
 
-    //Видалення
-    let allDelete = document.querySelectorAll('.delete')
 
-    for(i of allDelete){
+
+  let all = document.querySelectorAll('.AddToCart')
+      for(i of all) {
         i.addEventListener('click', function(e){
-        let curId = e.target.parentNode.id
-        Delete(curId)
-      })
-    }
-
-    function Delete(curId){
-        //Видалення в user
-          //Знаходимо айді володаря кружки
-          var temp = AllCups.filter(elem => elem.id==curId)
-          let UserId = temp[0].ownerId
-
-          //Знаходимо володаря кружки по його айді
-          let Allusers = JSON.parse(localStorage.getItem('users'))
-          neededUser = Allusers.filter(elem => elem.id==UserId)
-
+          let CupId = e.target.id
+          let users = JSON.parse(localStorage.getItem('users'))
+          //Пошук юзера
+          let me = GetCurrentUser()
+          let neededUser = users.filter(elem => elem.id == me.id)
           //Тимчасово видаляємо його з списку
-          Allusers = Allusers.filter(elem => elem.id!=UserId)
+          let newMas = users.filter(elem => elem.id != me.id)
+          //Записуємо айді кружки в корзину
+          neededUser[0].cart.push(CupId)
+          //Повертаємо юзера в список
+          newMas.push(neededUser[0])
+          localStorage.setItem('users', JSON.stringify(newMas))
+          
 
-          //Видаляємо з списку кружок ту, яку виділено
-          neededUser[0].cups = neededUser[0].cups.filter(elem => elem.id!=curId)
-          //Переписуємо Юзера 
-          Allusers.push(neededUser[0])
-          localStorage.setItem('users', JSON.stringify(Allusers))
+        })
+      }
 
-        //Видалення в cups
-          var newMas = AllCups.filter(elem => elem.id!=curId)
-          localStorage.setItem('cups', JSON.stringify(newMas))
+      document.getElementById('warnings').innerHTML = `
+          <div class="alert alert-success" role="alert" id="Success">
+            Great! You added cup to your cart
+          </div>
+          `
+          let start = 20
+          let op = 100
+          let warning = document.getElementById('Success')
+          let timer = setInterval(function() {
+            if(start<15){
+              warning.style.opacity = op + "%"
+              op = op-1
+            }
+            start = start - 2
+            if(op == 0){
+              clearInterval(timer)
+              document.getElementById('warnings').innerHTML = ""
+            }
+          }, 30);
 
-          me = GetCurrentUser()
-          window.location.reload(true);
-    }
-
-
-    //Редагування
-    let allEdit = document.querySelectorAll(".edit")
-    for(i of allEdit){
-      console.log("ihh")
-      i.addEventListener('click', function(e) {
-        let temp = AllCups.filter(elem => elem.id == e.target.parentNode.id)
-        Delete(e.target.parentNode.id)
-        let newMas = [true, temp[0]]
-        console.log(newMas)
-        localStorage.setItem('toEdit', JSON.stringify(newMas))
-        window.location.href = 'add.html'
-      })
-    }
-
+    
   }
-
+    
 </script>
 
 </html>

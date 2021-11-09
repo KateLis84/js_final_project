@@ -119,6 +119,7 @@
     // Перевірка валідності
       if(currentPhone!=false&&currentEmail!=false&&currentPassword!=false&&isFull!=false){
         AddUser(currentPhone);
+        localStorage.setItem('IsIn', true)
         window.location.href = 'main.html';
       }
   })

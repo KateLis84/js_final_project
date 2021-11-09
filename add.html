@@ -109,6 +109,11 @@
 
 <script src="main.js"></script>
 <script>
+  let isIn = localStorage.getItem('IsIn')
+      if(isIn==null || isIn == "false"){
+        document.body.innerHTML = "Log In First"
+      }
+      else{
     let name =  document.getElementById('inputName')
     let color = document.getElementById('inputColor')
     let description = document.getElementById('inputDescription')
@@ -118,6 +123,22 @@
     let warning = document.getElementById('warnings')
 
     let me = GetCurrentUser();
+
+    //Перевірка чи це редагування
+      let toEdit = JSON.parse(localStorage.getItem('toEdit'))
+      if (toEdit != null) {
+        if(toEdit[0] == true){
+          let neededCup = toEdit[1]
+          name.value = neededCup.name
+          color.value = neededCup.color
+          description.value = neededCup.description
+          photo.value = neededCup.photo
+          size.value = neededCup.size
+          price.value = neededCup.price
+
+          localStorage.setItem('toEdit', JSON.stringify([]))
+        }
+    }
 
     document.getElementById('save').addEventListener('click', function(){
       //Перевірка довжин
@@ -185,6 +206,8 @@
 
       localStorage.setItem('users', JSON.stringify(newMas))
     }
+  }
+    
 </script>
 
 </html>

@@ -67,6 +67,10 @@
   <script src="main.js"></script>
 
   <script>
+    let isIn = localStorage.getItem('IsIn')
+      if(isIn==null || isIn == "false"){
+        document.body.innerHTML = "Log In First"
+      }else{
     //Відображення товару
       let cups = JSON.parse(localStorage.getItem('cups'))
       let row = document.getElementById('AllCups')
@@ -79,14 +83,26 @@
             <h5 class="card-title">`+ cups[i].name +`</h5>
             <p class="card-text">`+ cups[i].description +`</p>
             <h5 class="card-title">`+ cups[i].price + `$</h5>
-            <p class="card-text"><small class="text-muted">`+ owner.name + ` `+ owner.secondName +`</small></p>
+            <p class="card-text"><small class="text-muted seeOwner" id="`+owner.id+`">`+ owner.name + ` `+ owner.secondName +`</small></p>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item"><button class="btn btn-success" id="`+ cups[i].id +`">Add to cart</button></li>
+            <li class="list-group-item"><button class="btn btn-success AddToCart" id="`+ cups[i].id +`">Add to cart</button></li>
           </ul>
         </div>
         `
       }
+
+      let OwnerButtons = document.getElementsByClassName('seeOwner')
+      for(i of OwnerButtons){
+        i.addEventListener('click', function(e) {
+          let id = e.target.id
+          let AllUsers = JSON.parse(localStorage.getItem('users'))
+          neededUser = AllUsers.filter(elem => elem.id == id)
+          localStorage.setItem('seeUser', JSON.stringify(neededUser[0]))
+          window.location.href = "otherProfile.html"
+        })
+      }
+      
 
       function GetUserOfCup(i){
         let OwnerId = cups[i].ownerId;
@@ -97,21 +113,21 @@
     
 
     //Додавання в кошик
-      let all = document.querySelectorAll('.btn-success')
-      for(i in all) {
-        all[i].addEventListener('click', function(e){
-          // let CupId = e.target.id
-          // let users = JSON.parse(localStorage.getItem('users'))
-          // //Пошук юзера
-          // let me = GetCurrentUser()
-          // let neededUser = users.filter(elem => elem.id == me.id)
-          // //Тимчасово видаляємо його з списку
-          // let newMas = users.filter(elem => elem.id != me.id)
-          // //Записуємо айді кружки в корзину
-          // neededUser[0].cart.push(CupId)
-          // //Повертаємо юзера в список
-          // newMas.push(neededUser[0])
-          // localStorage.setItem('users', JSON.stringify(newMas))
+      let all = document.querySelectorAll('.AddToCart')
+      for(i of all) {
+        i.addEventListener('click', function(e){
+          let CupId = e.target.id
+          let users = JSON.parse(localStorage.getItem('users'))
+          //Пошук юзера
+          let me = GetCurrentUser()
+          let neededUser = users.filter(elem => elem.id == me.id)
+          //Тимчасово видаляємо його з списку
+          let newMas = users.filter(elem => elem.id != me.id)
+          //Записуємо айді кружки в корзину
+          neededUser[0].cart.push(CupId)
+          //Повертаємо юзера в список
+          newMas.push(neededUser[0])
+          localStorage.setItem('users', JSON.stringify(newMas))
           
           document.getElementById('warnings').innerHTML = `
           <div class="alert alert-success" role="alert" id="Success">
@@ -123,7 +139,6 @@
           let warning = document.getElementById('Success')
           let timer = setInterval(function() {
             if(start<15){
-              console.log('here')
               warning.style.opacity = op + "%"
               op = op-1
             }
@@ -136,7 +151,8 @@
 
         })
       }
-
+      
+    }
   </script>
 </body>
 
