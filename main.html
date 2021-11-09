@@ -28,6 +28,11 @@
       img{
         width: 150px !important;
       }
+
+      .text-muted:hover{
+          text-decoration: underline;
+          cursor: pointer;
+      }
   </style>
 </head>
 
@@ -54,7 +59,7 @@
           <li class="nav-item">
             <a class="nav-link" href="cart.html">Cart</a>
           </li>
-        </ul>
+        </ul> 
       </div>
     </div>
   </nav>
@@ -82,6 +87,8 @@
           <div class="card-body">
             <h5 class="card-title">`+ cups[i].name +`</h5>
             <p class="card-text">`+ cups[i].description +`</p>
+            <p class="card-text"><b>Size: </b> `+ cups[i].size + `</p>
+            <p class="card-text"><b>Color: </b> `+ cups[i].color +`</p>
             <h5 class="card-title">`+ cups[i].price + `$</h5>
             <p class="card-text"><small class="text-muted seeOwner" id="`+owner.id+`">`+ owner.name + ` `+ owner.secondName +`</small></p>
           </div>

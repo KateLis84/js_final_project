@@ -145,15 +145,12 @@ let isIn = localStorage.getItem('IsIn')
           newMas.push(neededUser[0])
           localStorage.setItem('users', JSON.stringify(newMas))
           
-
-        })
-      }
-
-      document.getElementById('warnings').innerHTML = `
+          document.getElementById('warnings').innerHTML = `
           <div class="alert alert-success" role="alert" id="Success">
             Great! You added cup to your cart
           </div>
           `
+
           let start = 20
           let op = 100
           let warning = document.getElementById('Success')
@@ -168,6 +165,11 @@ let isIn = localStorage.getItem('IsIn')
               document.getElementById('warnings').innerHTML = ""
             }
           }, 30);
+
+        })
+      }
+
+    
 
     
   }
