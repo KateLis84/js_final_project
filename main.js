@@ -1,14 +1,14 @@
 class user{
     constructor(email, password, phone, name, secondName, description, photo){
         this.id = Date.now()
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.name = name;
-        this.secondName = secondName;
-        this.description = description;
-        this.photo = photo;
-        this.cart = [];
+        this.email = email; //
+        this.password = password; //
+        this.phone = phone; //
+        this.name = name; //
+        this.secondName = secondName; //
+        this.description = description; //
+        this.photo = photo; //
+        this.cart = []; //
         this.cups = [];
     }
 }
@@ -16,13 +16,13 @@ class cup{
 
     constructor(name, ownerId, photo, description, price, size, color) {
         this.id = Date.now();
-        this.ownerId = ownerId;
-        this.name = name;
-        this.photo = photo;
-        this.description = description;
-        this.price = price;
-        this.size = size;
-        this.color = color;
+        this.ownerId = ownerId; //
+        this.name = name; //
+        this.photo = photo; //
+        this.description = description; //
+        this.price = price; //
+        this.size = size; //
+        this.color = color; //
     }
 }
 
