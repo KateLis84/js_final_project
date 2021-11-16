@@ -12,6 +12,7 @@ class user{
         this.cups = [];
     }
 }
+
 class cup{
 
     constructor(name, ownerId, photo, description, price, size, color) {

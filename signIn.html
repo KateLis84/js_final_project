@@ -91,6 +91,7 @@
 
 <script src="main.js"></script>
 <script>
+    //Витягування полів
     let name =  document.getElementById('inputName')
     let secondName = document.getElementById('inputSecondName')
     let email = document.getElementById('inputEmail')
@@ -101,6 +102,8 @@
     let rpassword = document.getElementById('inputRPassword')
 
   document.getElementById('logIn').addEventListener('click', function(){window.location.href = 'logIn.html'})
+
+
 
   document.getElementById('signIn').addEventListener('click', function(e){
     localStorage.removeItem('user')
@@ -155,6 +158,7 @@
       if(users == null){
         return true;
       }
+        //Перевірка наявності емейлу
         for(let i = 0; i<users.length; i++){
             if(email.value == users[i].email){
               document.getElementById('warnings').innerHTML += `<div class="alert alert-danger" role="alert">This email is already in use</div>`;
